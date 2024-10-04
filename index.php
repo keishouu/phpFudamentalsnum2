@@ -31,24 +31,22 @@ if (isset($_GET["loginBtn"])) {
     $password = $_GET['password'];
 
     if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-        echo '<h4>' . $_SESSION['username'] . ' is already logged in. Wait for them to log out first!</h4>';
+
+        echo '<h3>' . htmlspecialchars($_SESSION['username']) . ' is already logged in. Wait for them to log out first!</h3>';
     } else {
 
         $_SESSION['logged_in'] = true;
         $_SESSION['username'] = $username;
 
-        function randomizePassword($password) {
-            $hashed = sha1($password);
-            $shuffled = str_shuffle($hashed);
-            $randomizedCode = substr($shuffled, 0, 30);
-
-            return $randomizedCode;
+        function hashPassword($password) {
+            
+            return password_hash($password, PASSWORD_DEFAULT);
         }
 
-        $randomizedPassword = randomizePassword($password);
+        $hashedPassword = hashPassword($password);
 
-        echo '<h4>Username: ' .$username. '</h4>';
-        echo '<h4>Password: ' . $randomizedPassword . '</h4>';
+        echo '<h3>Username: ' . $username . '</h3>';
+        echo '<h3>Password: ' . $hashedPassword . '</h3>';
     }
 }
 ?>
