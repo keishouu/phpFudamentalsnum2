@@ -19,13 +19,36 @@
 </html>
 
 <?php 
-    session_start();
-    if(isset($_GET["loginBtn"])) {
+session_start();
 
-        $username = $_GET['username'];
-        $password = $_GET['password'];
+if (isset($_GET["logoutBtn"])) {
+    session_unset();
+    session_destroy();
+}
 
-        echo '<H3> User logged in: '.$username.'</H3>';
-        echo  '<H3> Password: '.$password.'</H3>';
+if (isset($_GET["loginBtn"])) {
+    $username = $_GET['username'];
+    $password = $_GET['password'];
+
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        echo '<h4>' . $_SESSION['username'] . ' is already logged in. Wait for them to log out first!</h4>';
+    } else {
+
+        $_SESSION['logged_in'] = true;
+        $_SESSION['username'] = $username;
+
+        function randomizePassword($password) {
+            $hashed = sha1($password);
+            $shuffled = str_shuffle($hashed);
+            $randomizedCode = substr($shuffled, 0, 30);
+
+            return $randomizedCode;
+        }
+
+        $randomizedPassword = randomizePassword($password);
+
+        echo '<h4>Username: ' .$username. '</h4>';
+        echo '<h4>Password: ' . $randomizedPassword . '</h4>';
     }
+}
 ?>
